@@ -1,0 +1,165 @@
+[gd_scene format=3 uid="uid://2wap0283yk0r"]
+
+[ext_resource type="Script" uid="uid://clx5r0ig2ltr4" path="res://Main.cs" id="1_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://ceuu150fmggvr" path="res://player.tscn" id="1_ig7tw"]
+[ext_resource type="PackedScene" uid="uid://defdm2qdva75q" path="res://mob.tscn" id="2_h2yge"]
+[ext_resource type="Shader" uid="uid://b4qnudoffitcw" path="res://pixelate.gdshader" id="4_7mycd"]
+[ext_resource type="FontFile" uid="uid://cyxhh7ddkn62q" path="res://fonts/Montserrat-Medium.ttf" id="4_lquwl"]
+[ext_resource type="Script" uid="uid://b6yqacnxiq0jo" path="res://ScoreLabel.cs" id="5_7mycd"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_vli4l"]
+size = Vector3(60, 2, 60)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7mycd"]
+albedo_color = Color(7.508397e-06, 0.6625445, 0.868244, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_vli4l"]
+material = SubResource("StandardMaterial3D_7mycd")
+size = Vector3(60, 2, 60)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vli4l"]
+albedo_color = Color(0.49019608, 1, 0.21960784, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_vli4l"]
+material = SubResource("StandardMaterial3D_vli4l")
+
+[sub_resource type="Curve3D" id="Curve3D_h2yge"]
+closed = true
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, -13.792915, 0, -10.823607, 0, 0, 0, 0, 0, 0, 13.888702, 0, -11.206744, 0, 0, 0, 0, 0, 0, 13.888702, 0, 11.015174, 0, 0, 0, 0, 0, 0, -14.080269, 0, 10.823606),
+"tilts": PackedFloat32Array(0, 0, 0, 0)
+}
+point_count = 4
+
+[sub_resource type="Theme" id="Theme_vli4l"]
+default_font = ExtResource("4_lquwl")
+default_font_size = 22
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_srt8o"]
+shader = ExtResource("4_7mycd")
+shader_parameter/pixel_size = 1.0
+
+[node name="Main" type="Node" unique_id=419932461]
+script = ExtResource("1_0xm2m")
+MobScene = ExtResource("2_h2yge")
+
+[node name="Ground" type="StaticBody3D" parent="." unique_id=1687541537]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground" unique_id=1078714003]
+shape = SubResource("BoxShape3D_vli4l")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground" unique_id=111584383]
+mesh = SubResource("BoxMesh_vli4l")
+
+[node name="Player" parent="." unique_id=272706939 instance=ExtResource("1_ig7tw")]
+collision_mask = 6
+
+[node name="CameraPivot" type="Marker3D" parent="." unique_id=2143957372]
+
+[node name="Camera3D" type="Camera3D" parent="CameraPivot" unique_id=1954115727]
+transform = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, 0, 15.999878, 15.999878)
+projection = 1
+fov = 45.0
+size = 19.0
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=644059003]
+transform = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, 0, 0, 0)
+light_energy = 1.095
+shadow_enabled = true
+
+[node name="Cylinders" type="Node3D" parent="." unique_id=873445875]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Cylinders" unique_id=1350906116]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 0, -11)
+mesh = SubResource("CylinderMesh_vli4l")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Cylinders" unique_id=1711597699]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0, -11)
+mesh = SubResource("CylinderMesh_vli4l")
+skeleton = NodePath("../MeshInstance3D")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="Cylinders" unique_id=754812500]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 0, 11)
+mesh = SubResource("CylinderMesh_vli4l")
+skeleton = NodePath("../MeshInstance3D")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="Cylinders" unique_id=12305400]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0, 11)
+mesh = SubResource("CylinderMesh_vli4l")
+skeleton = NodePath("../MeshInstance3D3")
+
+[node name="SpawnPath" type="Path3D" parent="." unique_id=712825615]
+transform = Transform3D(1.0000001, 0, 9.313226e-10, 0, 1, 0, -9.313226e-10, 0, 1.0000001, 1.9073486e-06, 0, 9.536743e-07)
+curve = SubResource("Curve3D_h2yge")
+
+[node name="SpawnLocation" type="PathFollow3D" parent="SpawnPath" unique_id=243438057]
+transform = Transform3D(0.0138393305, 0, -0.99990237, 0, 1, 0, 0.99990237, 0, 0.0138393305, -13.792915, 0, -10.823607)
+
+[node name="MobTimer" type="Timer" parent="." unique_id=1804531918]
+wait_time = 0.5
+autostart = true
+
+[node name="UserInterface" type="Control" parent="." unique_id=1242706400]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ScoreLabel" type="Label" parent="UserInterface" unique_id=1266373510]
+layout_mode = 0
+offset_left = -336.0
+offset_top = -244.0
+offset_right = -248.0
+offset_bottom = -216.0
+theme = SubResource("Theme_vli4l")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "Score: 0"
+script = ExtResource("5_7mycd")
+
+[node name="Again" type="ColorRect" parent="UserInterface" unique_id=602716403]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -148.0
+offset_right = 142.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.48235294)
+
+[node name="Label" type="Label" parent="UserInterface/Again" unique_id=792087764]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 6.0
+offset_top = -11.5
+offset_right = -1.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Press ENTER or SPACE to restart the game"
+
+[node name="Pixelate" type="ColorRect" parent="." unique_id=1363232779]
+material = SubResource("ShaderMaterial_srt8o")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[connection signal="Hit" from="Player" to="." method="OnPlayerHit"]
+[connection signal="timeout" from="MobTimer" to="." method="OnMobTimerTimeout"]
